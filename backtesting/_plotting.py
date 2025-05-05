@@ -128,11 +128,11 @@ def _maybe_resample_data(resample_rule, df, indicators, equity_data, trades):
             "15min": 15,
             "30min": 30,
             "1h": 60,
-            "2h": 60 * 2,
-            "4h": 60 * 4,
-            "8h": 60 * 8,
-            "1D": 60 * 24,
-            "1W": 60 * 24 * 7,
+            "2h": 60*2,
+            "4h": 60*4,
+            "8h": 60*8,
+            "1D": 60*24,
+            "1W": 60*24*7,
             "1ME": np.inf,
         })
         timespan = df.index[-1] - df.index[0]
@@ -274,8 +274,12 @@ def plot(*, results: pd.Series,
     if is_datetime_index:
         fig_ohlc.xaxis.formatter = CustomJSTickFormatter(  # type: ignore[attr-defined]
             args=dict(axis=fig_ohlc.xaxis[0],
-                      formatter=DatetimeTickFormatter(days='%a, %d %b',
-                                                      months='%m/%Y'),
+                      formatter=DatetimeTickFormatter(
+                            days="%Y-%m-%d",
+                            months="%Y-%m-%d",
+                            years="%Y-%m-%d",
+                            hours="%Y-%m-%d"
+                      ),
                       source=source),
             code='''
 this.labels = this.labels || formatter.doFormat(ticks
@@ -312,7 +316,7 @@ return this.labels[index] || "";
 
         if is_datetime_index:
             formatters = {'@datetime': 'datetime'}
-            tooltips = [("Date", "@datetime{%c}")] + tooltips
+            tooltips = [("Date", "@datetime{%Y-%m-%d}")] + tooltips
         else:
             formatters = {}
             tooltips = [("#", "@index")] + tooltips
@@ -683,7 +687,6 @@ return this.labels[index] || "";
             f.legend.margin = 0
             f.legend.label_text_font_size = '8pt'
             f.legend.click_policy = "hide"
-            f.legend.background_fill_alpha = .9
         f.min_border_left = 0
         f.min_border_top = 3
         f.min_border_bottom = 6
